@@ -61,8 +61,8 @@ impl RuntimeStats {
     ///
     /// Tasks scheduled from outside of the runtime go via the runtime's
     /// injection queue, which is usually is slower.
-    pub fn external_schedule_count(&self) {
-        self.external_schedule_count.load(Relaxed);
+    pub fn external_schedule_count(&self) -> u64 {
+        self.external_schedule_count.load(Relaxed)
     }
 
     /// Returns a slice containing the worker stats for each worker thread.
