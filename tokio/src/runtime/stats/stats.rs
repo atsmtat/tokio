@@ -14,7 +14,7 @@ use std::time::{Duration, Instant};
 #[derive(Debug)]
 pub struct RuntimeStats {
     /// Number of tasks that are scheduled from outside the runtime.
-    external_schedule_count: AtomicU64,
+    remote_schedule_count: AtomicU64,
     /// Tracks per-worker performance counters
     workers: Box<[WorkerStats]>,
 }
@@ -52,7 +52,7 @@ impl RuntimeStats {
         }
 
         Self {
-            external_schedule_count: AtomicU64::new(0),
+            remote_schedule_count: AtomicU64::new(0),
             workers: workers.into_boxed_slice(),
         }
     }
@@ -61,8 +61,8 @@ impl RuntimeStats {
     ///
     /// Tasks scheduled from outside of the runtime go via the runtime's
     /// injection queue, which is usually is slower.
-    pub fn external_schedule_count(&self) -> u64 {
-        self.external_schedule_count.load(Relaxed)
+    pub fn remote_schedule_count(&self) -> u64 {
+        self.remote_schedule_count.load(Relaxed)
     }
 
     /// Returns a slice containing the worker stats for each worker thread.
@@ -71,8 +71,8 @@ impl RuntimeStats {
     }
 
     /// Increment the number of tasks scheduled externally
-    pub(crate) fn inc_external_schedule_count(&self) {
-        self.external_schedule_count.fetch_add(1, Relaxed);
+    pub(crate) fn inc_remote_schedule_count(&self) {
+        self.remote_schedule_count.fetch_add(1, Relaxed);
     }    
 }
 
